@@ -150,6 +150,7 @@ module VX_issue #(
     `SCOPE_ASSIGN (writeback_eop,     writeback_if.eop);
 
 `ifdef PERF_ENABLE
+    reg [`PERF_CTR_BITS-1:0] perf_active_threads; // Active threads
     reg [`PERF_CTR_BITS-1:0] perf_ibf_stalls;
     reg [`PERF_CTR_BITS-1:0] perf_scb_stalls;
     reg [`PERF_CTR_BITS-1:0] perf_alu_stalls;
@@ -159,7 +160,7 @@ module VX_issue #(
 `ifdef EXT_F_ENABLE
     reg [`PERF_CTR_BITS-1:0] perf_fpu_stalls;
 `endif
-
+    
     always @(posedge clk) begin
         if (reset) begin
             perf_ibf_stalls <= 0;
@@ -168,6 +169,7 @@ module VX_issue #(
             perf_lsu_stalls <= 0;
             perf_csr_stalls <= 0;
             perf_gpu_stalls <= 0;
+            perf_active_threads <= 0; // Setting active threads to 0.
         `ifdef EXT_F_ENABLE
             perf_fpu_stalls <= 0;
         `endif
@@ -190,6 +192,12 @@ module VX_issue #(
                 default: perf_gpu_stalls <= perf_gpu_stalls + `PERF_CTR_BITS'd1;
                 endcase
             end
+            if (ibuffer_if.valid & ibuffer_if.ready) begin
+                integer i; 
+                for (i = 0; i < `NUM_THREADS; i = i + 1) begin
+                    perf_active_threads <= perf_active_threads + ibuffer_if.tmask[i]; // Adding active threads to perf_active_threads
+                end                
+            end
         end
     end
     
@@ -199,6 +207,7 @@ module VX_issue #(
     assign perf_issue_if.lsu_stalls = perf_lsu_stalls;
     assign perf_issue_if.csr_stalls = perf_csr_stalls;
     assign perf_issue_if.gpu_stalls = perf_gpu_stalls;
+    assign perf_pipeline_if.active_threads = perf_active_threads; // Active thread performance interface
 `ifdef EXT_F_ENABLE
     assign perf_issue_if.fpu_stalls = perf_fpu_stalls;
 `endif

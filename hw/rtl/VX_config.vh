@@ -148,6 +148,8 @@
 `define CSR_MEPC        12'h341
 
 // Machine Performance-monitoring counters
+`define CSR_MPM_ACTIVE_THREADS      12'hB1E	// active threads
+`define CSR_MPM_ACTIVE_THREADS_H    12'hB9E
 `define CSR_MPM_BASE                12'hB00
 `define CSR_MPM_BASE_H              12'hB80
 // PERF: pipeline

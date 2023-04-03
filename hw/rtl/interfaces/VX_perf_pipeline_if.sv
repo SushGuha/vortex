@@ -7,7 +7,7 @@ interface VX_perf_pipeline_if ();
     wire [`PERF_CTR_BITS-1:0]   loads;
     wire [`PERF_CTR_BITS-1:0]   stores;
     wire [`PERF_CTR_BITS-1:0]   branches;
-    
+    wire [`PERF_CTR_BITS-1:0]   active_threads;
     wire [`PERF_CTR_BITS-1:0]   ibf_stalls;
     wire [`PERF_CTR_BITS-1:0]   scb_stalls;
     wire [`PERF_CTR_BITS-1:0]   lsu_stalls;
@@ -30,6 +30,7 @@ interface VX_perf_pipeline_if ();
         output lsu_stalls,
         output csr_stalls,
         output alu_stalls,
+        output active_threads,
     `ifdef EXT_F_ENABLE
         output fpu_stalls,
     `endif
@@ -45,6 +46,7 @@ interface VX_perf_pipeline_if ();
         input lsu_stalls,
         input csr_stalls,
         input alu_stalls,
+        input active_threads,
     `ifdef EXT_F_ENABLE
         input fpu_stalls,
     `endif

@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.html": "html",
+    "*.cs": "csharp",
+    "*.tex": "latex",
+    "system_error": "cpp"
+  }
+}
