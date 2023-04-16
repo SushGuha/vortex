@@ -15,6 +15,10 @@ module VX_lsu_unit #(
     // inputs
     VX_lsu_req_if.slave     lsu_req_if,
 
+    `ifdef PERF_ENABLE
+        VX_perf_memsys_if     perf_memsys_if,
+    `endif  
+
     // outputs
     VX_commit_if.master     ld_commit_if,
     VX_commit_if.master     st_commit_if
@@ -39,6 +43,7 @@ module VX_lsu_unit #(
     wire [31:0]                   req_pc;
     wire                          req_is_dup;
     wire                          req_is_prefetch;
+    reg [31:0] lsu_unit_if;
     
     wire mbuf_empty;
 
@@ -113,6 +118,8 @@ module VX_lsu_unit #(
 
     wire [`LSUQ_ADDR_BITS-1:0] mbuf_waddr, mbuf_raddr;    
     wire mbuf_full;
+    reg [`PERF_CTR_BITS-1:0] same_mem_reqs_lsu_unit;
+    
 
     `UNUSED_VAR (rsp_type)
     `UNUSED_VAR (rsp_is_prefetch)
@@ -158,15 +165,21 @@ module VX_lsu_unit #(
         .empty        (mbuf_empty)
     );
 
+    assign perf_memsys_if.same_mem_reqs = same_mem_reqs_lsu_unit;
+
     wire dcache_req_ready = &(dcache_req_if.ready | req_sent_mask | ~req_tmask_dup);
 
     wire [`NUM_THREADS-1:0] req_sent_mask_n = req_sent_mask | dcache_req_fire;
 
     always @(posedge clk) begin
         if (reset) begin
+            same_mem_reqs_lsu_unit <= 0;
             req_sent_mask <= 0;
             is_req_start  <= 1;
         end else begin
+            if (req_is_dup & !stall_in) begin 
+                same_mem_reqs_lsu_unit <= same_mem_reqs_lsu_unit + 1;
+            end
             if (dcache_req_ready) begin
                 req_sent_mask <= 0;
                 is_req_start  <= 1;
@@ -175,6 +188,7 @@ module VX_lsu_unit #(
                 is_req_start  <= (0 == req_sent_mask_n);
             end
         end
+        
     end
 
     // need to hold the acquired tag index until the full request is submitted

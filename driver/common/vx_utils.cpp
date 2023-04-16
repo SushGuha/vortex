@@ -107,6 +107,7 @@ extern int vx_dump_perf(vx_device_h device, FILE* stream) {
 
 #ifdef PERF_ENABLE    
   uint64_t active_threads = 0; // Number of active threads
+  uint64_t same_mem_reqs = 0; //
   // PERF: pipeline stalls
   uint64_t ibuffer_stalls = 0;
   uint64_t scoreboard_stalls = 0;
@@ -176,6 +177,9 @@ extern int vx_dump_perf(vx_device_h device, FILE* stream) {
     uint64_t active_threads_per_core = get_csr_64(staging_ptr, CSR_MPM_ACTIVE_THREADS);
     if (num_cores > 1) fprintf(stream, "PERF: core%d: active threads=%ld\n", core_id, active_threads_per_core);
     active_threads += active_threads_per_core;
+    // int CSR_MPM_SAME_MEM_REQ = 0xB1E;
+    // same_mem_reqs = get_csr_64(staging_ptr, CSR_MPM_SAME_MEM_REQ);
+    // fprintf(stream, "HERE: %u\n", same_mem_reqs);
     // PERF: pipeline    
     // ibuffer_stall
     uint64_t ibuffer_stalls_per_core = get_csr_64(staging_ptr, CSR_MPM_IBUF_ST);
@@ -309,6 +313,7 @@ extern int vx_dump_perf(vx_device_h device, FILE* stream) {
   // Num threads per cycle calculation.
   float num_threads_per_cycle = (float) (active_threads / double(cycles));
   fprintf(stream, "PERF: average active threads per cycle =%f\n", num_threads_per_cycle);
+  // fprintf(stream, "PERF: number of mem reqs where all threads accessed the same memory address =%u\n", same_mem_reqs);
   int icache_read_hit_ratio = (int) ((1.0 - (double(icache_read_misses) / double(icache_reads))) * 100);
   int dcache_read_hit_ratio = (int) ((1.0 - (double(dcache_read_misses) / double(dcache_reads))) * 100);
   int dcache_write_hit_ratio = (int) ((1.0 - (double(dcache_write_misses) / double(dcache_writes))) * 100);
