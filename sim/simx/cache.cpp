@@ -37,7 +37,7 @@ struct params_t {
         this->log2_num_inputs = log2ceil(config.num_inputs);
 
         this->words_per_block = 1 << offset_bits;
-        this->blocks_per_set  = 1 << config.A;
+        this->blocks_per_set  = 1 << config.A;  
         this->sets_per_bank   = 1 << index_bits;
 
         assert(config.ports_per_bank <= this->words_per_block);

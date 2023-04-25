@@ -93,7 +93,7 @@ module VX_lsu_unit #(
         .clk      (clk),
         .reset    (reset),
         .enable   (!stall_in),
-        .data_in  ({lsu_valid, lsu_is_dup, lsu_req_if.is_prefetch, lsu_req_if.uuid, lsu_req_if.wid, lsu_req_if.tmask, lsu_req_if.PC, full_addr, lsu_addr_type, lsu_req_if.op_type, lsu_req_if.rd, lsu_wb, lsu_req_if.store_data}),
+        .data_in  ({lsu_valid, lsu_is_dup, lsu_req_if.is_prefetch, lsu_req_if.is_matld, lsu_req_if.uuid, lsu_req_if.wid, lsu_req_if.tmask, lsu_req_if.PC, full_addr, lsu_addr_type, lsu_req_if.op_type, lsu_req_if.rd, lsu_wb, lsu_req_if.store_data}),
         .data_out ({req_valid, req_is_dup, req_is_prefetch,        req_uuid,        req_wid,        req_tmask,        req_pc,        req_addr,  req_addr_type, req_type,           req_rd,        req_wb, req_data})
     );
 
@@ -248,7 +248,8 @@ module VX_lsu_unit #(
         assign dcache_req_if.rw[i]     = ~req_wb;
         assign dcache_req_if.addr[i]   = req_addr[i][31:2];
         assign dcache_req_if.byteen[i] = mem_req_byteen;
-        assign dcache_req_if.data[i]   = mem_req_data;
+        assign dcache_req_if.data[i]   = mem_req_data; // The data output from the memory request.
+        // This is what needs to be routed to the custom regs.
         assign dcache_req_if.tag[i]    = {req_uuid, `LSU_TAG_ID_BITS'(req_tag), req_addr_type[i]};
     end
 

@@ -104,7 +104,7 @@ enum class LsuType {
   LOAD,
   STORE,
   FENCE,
-  PREFETCH,    
+  PREFETCH,   
 };
 
 inline std::ostream &operator<<(std::ostream &os, const LsuType& type) {

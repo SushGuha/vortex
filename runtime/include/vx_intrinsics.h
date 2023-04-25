@@ -124,10 +124,10 @@ extern "C" {
         asm volatile (".insn s 0x6b, 5, x0, 0(%0)" :: "r"(addr));
     }
 
-    // // Matrix multiply
-    // inline void vx_matmult(unsigned addr) {
-    //     asm volatile (".insn s 0x6b, 5, x0, 0(%0)" :: "r"(addr));
-    // }
+    // Matrix load
+    inline void vx_matld(unsigned addr) {
+        asm volatile (".insn s 0x6b, 6, x0, 0(%0)" :: "r"(addr));
+    }
 
     // Return active warp's thread id 
     inline int vx_thread_id() {

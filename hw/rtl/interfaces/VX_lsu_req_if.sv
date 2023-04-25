@@ -19,6 +19,7 @@ interface VX_lsu_req_if ();
     wire                            wb;
     wire                            ready;
     wire                            is_prefetch;
+    wire                            is_matld;
 
     modport master (
         output valid,

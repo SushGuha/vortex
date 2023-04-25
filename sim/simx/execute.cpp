@@ -1427,15 +1427,26 @@ void Warp::execute(const Instr& instr, pipeline_trace_t* trace) {
     } break;
     case 5: {
       // PREFETCH
-      // trace->exe_type = ExeType::LSU; 
-      // trace->lsu.type = LsuType::PREFETCH; 
-      // trace->used_iregs.set(rsrc0);
-      run_sysarr_test();
+      trace->exe_type = ExeType::LSU;
+      trace->lsu.type = LsuType::PREFETCH;
+      trace->used_iregs.set(rsrc0);
       for (uint32_t t = 0; t < num_threads; ++t) {
         if (!tmask_.test(t))
           continue;
-        // auto mem_addr = rsdata[t][0].i;
-        // trace->mem_addrs.at(t).push_back({mem_addr, 4});
+        auto mem_addr = rsdata[t][0].i;
+        trace->mem_addrs.at(t).push_back({ mem_addr, 4 });
+      }
+    } break;
+    case 6: {
+      // MATLD
+      trace->exe_type = ExeType::LSU;
+      trace->lsu.type = LsuType::PREFETCH;
+      trace->used_iregs.set(rsrc0);
+      for (uint32_t t = 0; t < num_threads; ++t) {
+        if (!tmask_.test(t))
+          continue;
+        auto mem_addr = rsdata[t][0].i;
+        trace->mem_addrs.at(t).push_back({ mem_addr, 4 });
       }
     } break;
     default:
