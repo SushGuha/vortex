@@ -227,6 +227,41 @@ module VX_execute #(
         .gpu_commit_if  (gpu_commit_if)
     );
 
+
+    logic [31:0] in_a [1:0];
+    assign in_a = '{default: '0};
+    
+    logic [31:0] in_b [1:0];
+    assign in_b = '{default: '0};
+
+    logic [31:0] out_matrix [3:0];
+    `UNUSED_VAR (out_matrix);
+
+    wire rst;
+    assign rst = 0;
+
+    logic ready;
+    `UNUSED_VAR (ready);
+    logic start;
+    assign start = 1;
+
+    VX_systolic_array #(.MATRIX_SIZE(2), .DATA_SIZE(32)) systolic_array (
+        .clk            (clk),
+        .reset          (rst),
+        .in_a           (in_a),
+        .in_b           (in_b),
+        .out_matrix     (out_matrix)
+    );
+
+    VX_sau_unit #(.CORE_ID(CORE_ID), .MATRIX_SIZE(2), .DATA_SIZE(32)) sau_unit (
+        .clk            (clk),
+        .reset          (rst),
+        .start          (start),
+        .out_matrix     (out_matrix),
+        .ready          (ready)
+    );
+
+
     // special workaround to get RISC-V tests Pass/Fail status
     wire ebreak /* verilator public */;
     assign ebreak = alu_req_if.valid && alu_req_if.ready

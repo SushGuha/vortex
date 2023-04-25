@@ -1,0 +1,10 @@
+-Wall
+-Wextra
+-Wfatal-errors
+-Wno-deprecated-declarations
+-Wno-unused-parameter
+-Wno-strict-aliasing
+-Wno-narrowing
+-O2
+-MM
+main.cc
