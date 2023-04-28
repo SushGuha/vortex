@@ -386,7 +386,7 @@ module VX_decode  #(
                     end
                     3'h7: begin
                         ex_type = `EX_SAU;
-                        op_type = `INST_OP_BITS'(`INST_MATMUL);
+                        op_type = `INST_OP_BITS'(`INST_MATLD);
                         `USED_IREG (rs1);
                         `USED_IREG (rs2);
                      end

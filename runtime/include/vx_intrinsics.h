@@ -127,10 +127,13 @@ extern "C" {
 
     // Matrix load
     inline void vx_matld(int* outValues, unsigned addr) {
-        asm volatile("lb  %[val], 0(%0)" : [val] "=r"(outValues[0]) : "r"(addr));
-        asm volatile("lb  %[val], 0(%0)" : [val] "=r"(outValues[1]) : "r"(addr + 1));
-        asm volatile("lb  %[val], 0(%0)" : [val] "=r"(outValues[2]) : "r"(addr + 2));
-        asm volatile("lb  %[val], 0(%0)" : [val] "=r"(outValues[3]) : "r"(addr + 3));
+        asm volatile("lb  t0, 0(%0)" : [val] "=r"(outValues[0]) : "r"(addr));
+        asm volatile("lb  t1, 0(%0)" : [val] "=r"(outValues[1]) : "r"(addr + 1));
+        asm volatile("lb  t2, 0(%0)" : [val] "=r"(outValues[2]) : "r"(addr + 2));
+        asm volatile("lb  t3, 0(%0)" : [val] "=r"(outValues[3]) : "r"(addr + 3));
+        asm volatile (".insn s 0x6b, 7, %0, %1" :: "r"(addr), "r"(addr + 1));
+        asm volatile (".insn s 0x6b, 7, %0, %1" :: "r"(addr + 2), "r"(addr + 3));
+
     }
 
     // Matrix store
@@ -143,7 +146,7 @@ extern "C" {
 
     // Matrix multiplication
     inline void vx_matmul(unsigned addrA, unsigned addrB) {
-        asm volatile (".insn s 0x6b, 7, %0, %1" :: "r"(addrA), "r"(addrB));
+        // asm volatile (".insn s 0x6b, 7, %0, %1" :: "r"(addrA), "r"(addrB));
     }
 
     // Return active warp's thread id 

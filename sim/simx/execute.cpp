@@ -1437,7 +1437,7 @@ void Warp::execute(const Instr& instr, pipeline_trace_t* trace) {
       }
     } break;
     case 7: {
-      // // MATMUL
+      // // MATLD
       // trace->exe_type = ExeType::SAU;
       // // trace->lsu.type = LsuType::PREFETCH;
       // trace->used_iregs.set(rsrc0);
