@@ -224,6 +224,18 @@ void CsrUnit::tick() {
     DT(3, "pipeline-execute: op=CSR, " << *trace);
 }
 
+// SauUnit::SauUnit(const SimContext& ctx, Core* core) : ExeUnit(ctx, core, "SAU") {}
+    
+// void SauUnit::tick() {
+//     if (Input.empty()) 
+//         return;
+//     auto trace = Input.front();
+//     Output.send(trace, 1);
+//     auto time = Input.pop();
+//     core_->perf_stats_.csr_stalls += (SimPlatform::instance().cycles() - time);
+//     DT(3, "pipeline-execute: op=SAU, " << *trace);
+// }
+
 ///////////////////////////////////////////////////////////////////////////////
 
 FpuUnit::FpuUnit(const SimContext& ctx, Core* core) : ExeUnit(ctx, core, "FPU") {}

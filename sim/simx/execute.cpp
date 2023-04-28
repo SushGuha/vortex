@@ -1404,6 +1404,12 @@ void Warp::execute(const Instr &instr, pipeline_trace_t *trace) {
         trace->mem_addrs.at(t).push_back({mem_addr, 4});
       }
     } break;
+    // case 7: {
+    //   // MATMUL_imm
+    //   trace->exe_type = ExeType::SAU;
+    //   trace->sau.type = SauType::MATMUL_imm;
+    //   trace->used_iregs.set(rsrc0);
+    // }
     default:
       std::abort();
     }

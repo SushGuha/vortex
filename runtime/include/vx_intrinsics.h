@@ -84,7 +84,7 @@ extern "C" {
 // Conditional move
 #define vx_cmov(c, t, f) ({                     \
 	unsigned __r;		                        \
-    __asm__ __volatile__ (".insn r4 0x5b, 1, 0, %0, %1, %2, %3" : "=r"(__r : "r"(c), "r"(t), "r"(f)); \
+    __asm__ __volatile__ (".insn r4 0x5b, 1, 0, %0, %1, %2, %3" : "=r"(__r) : "r"(c), "r"(t), "r"(f)); \
 	__r;							            \
 })
 
@@ -139,6 +139,10 @@ extern "C" {
         asm volatile("sb  %0, 0(%1)" :: "r"(arrValues[1]), "r"(addr + 1));
         asm volatile("sb  %0, 0(%1)" :: "r"(arrValues[2]), "r"(addr + 2));
         asm volatile("sb  %0, 0(%1)" :: "r"(arrValues[3]), "r"(addr + 3));
+    }
+
+    inline void vx_matmul(unsigned destAddr, unsigned imm) {
+        asm volatile(".insn s 0x6b 7, %1, ");
     }
 
     // Return active warp's thread id 

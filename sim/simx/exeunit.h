@@ -83,6 +83,14 @@ public:
     void tick();
 };
 
+// class SauUnit : public ExeUnit {
+// public:
+//     SauUnit(const SimContext& ctx, Core*);
+    
+//     void tick();
+// };
+
+
 ///////////////////////////////////////////////////////////////////////////////
 
 class GpuUnit : public ExeUnit {

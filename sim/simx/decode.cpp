@@ -352,6 +352,7 @@ static const char* op_string(const Instr &instr) {
     case 3: return "JOIN";
     case 4: return "BAR";
     case 5: return "PREFETCH";
+    case 7: return "MATMUL_imm";
     default:
       std::abort();
     }

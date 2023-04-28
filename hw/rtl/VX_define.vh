@@ -197,6 +197,7 @@
 `define INST_GPU_BAR         4'h4
 `define INST_GPU_PRED        4'h5
 `define INST_GPU_TEX         4'h6
+`define INST_MATMUL_imm      4'h7
 `define INST_GPU_BITS        4
 
 ///////////////////////////////////////////////////////////////////////////////
