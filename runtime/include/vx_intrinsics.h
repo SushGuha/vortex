@@ -141,6 +141,11 @@ extern "C" {
         asm volatile("sb  %0, 0(%1)" :: "r"(arrValues[3]), "r"(addr + 3));
     }
 
+    // Matrix multiplication
+    inline void vx_matmul(unsigned addrA, unsigned addrB) {
+        asm volatile (".insn s 0x6b, 7, %0, %1" :: "r"(addrA), "r"(addrB));
+    }
+
     // Return active warp's thread id 
     inline int vx_thread_id() {
         int result;
