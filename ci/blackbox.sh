@@ -111,13 +111,14 @@ esac
 
 if [ -d "$VORTEX_HOME/tests/opencl/$APP" ];
 then
-    APP_PATH=$VORTEX_HOME/tests/opencl/$APP
+    APP_PATH=$VORTEX_HOME/tests/runtime/$APP
 elif [ -d "$VORTEX_HOME/tests/regression/$APP" ];
 then
-    APP_PATH=$VORTEX_HOME/tests/regression/$APP
+    APP_PATH=$VORTEX_HOME/tests/runtime/$APP
 else
-    echo "Application folder found: $APP"
-    exit -1
+    # echo "Application folder found: $APP"
+    # exit -1
+    APP_PATH=$VORTEX_HOME/tests/runtime/$APP
 fi
 
 CONFIGS="-DNUM_CLUSTERS=$CLUSTERS -DNUM_CORES=$CORES -DNUM_WARPS=$WARPS -DNUM_THREADS=$THREADS -DL2_ENABLE=$L2 -DL3_ENABLE=$L3 $PERF_FLAG $CONFIGS"

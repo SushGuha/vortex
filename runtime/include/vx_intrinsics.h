@@ -2,6 +2,7 @@
 #define VX_INTRINSICS_H
 
 #include <VX_config.h>
+// #include "../../hw/VX_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -73,7 +74,7 @@ extern "C" {
         __asm__ __volatile__ ("csrc %0, %1"	:: "i" (csr), "r" (__v)); \
 })
 
-// Texture load
+    // Texture load
 #define vx_tex(unit, u, v, lod) ({              \
 	unsigned __r;                               \
     __asm__ __volatile__ (".insn r4 0x5b, 0, %1, %0, %2, %3, %4" : "=r"(__r) : "i"(unit), "r"(u), "r"(v), "r"(lod)); \
@@ -88,115 +89,131 @@ extern "C" {
 })
 
 // Set thread mask
-inline void vx_tmc(unsigned thread_mask) {
-    asm volatile (".insn s 0x6b, 0, x0, 0(%0)" :: "r"(thread_mask));
-}
+    inline void vx_tmc(unsigned thread_mask) {
+        asm volatile (".insn s 0x6b, 0, x0, 0(%0)" :: "r"(thread_mask));
+    }
 
-// Set thread predicate
-inline void vx_pred(unsigned condition) {
-    asm volatile (".insn s 0x6b, 0, x1, 0(%0)" :: "r"(condition));
-}
+    // Set thread predicate
+    inline void vx_pred(unsigned condition) {
+        asm volatile (".insn s 0x6b, 0, x1, 0(%0)" :: "r"(condition));
+    }
 
-typedef void (*vx_wspawn_pfn)();
+    typedef void (*vx_wspawn_pfn)();
 
-// Spawn warps
-inline void vx_wspawn(unsigned num_warps, vx_wspawn_pfn func_ptr) {
-    asm volatile (".insn s 0x6b, 1, %1, 0(%0)" :: "r"(num_warps), "r"(func_ptr));
-}
+    // Spawn warps
+    inline void vx_wspawn(unsigned num_warps, vx_wspawn_pfn func_ptr) {
+        asm volatile (".insn s 0x6b, 1, %1, 0(%0)" :: "r"(num_warps), "r"(func_ptr));
+    }
 
-// Split on a predicate
-inline void vx_split(int predicate) {
-    asm volatile (".insn s 0x6b, 2, x0, 0(%0)" :: "r"(predicate));
-}
+    // Split on a predicate
+    inline void vx_split(int predicate) {
+        asm volatile (".insn s 0x6b, 2, x0, 0(%0)" :: "r"(predicate));
+    }
 
-// Join
-inline void vx_join() {
-  asm volatile (".insn s 0x6b, 3, x0, 0(x0)");
-}
+    // Join
+    inline void vx_join() {
+        asm volatile (".insn s 0x6b, 3, x0, 0(x0)");
+    }
 
-// Warp Barrier
-inline void vx_barrier(unsigned barried_id, unsigned num_warps) {
-    asm volatile (".insn s 0x6b, 4, %1, 0(%0)" :: "r"(barried_id), "r"(num_warps));
-}
+    // Warp Barrier
+    inline void vx_barrier(unsigned barried_id, unsigned num_warps) {
+        asm volatile (".insn s 0x6b, 4, %1, 0(%0)" :: "r"(barried_id), "r"(num_warps));
+    }
 
-// Prefetch
-inline void vx_prefetch(unsigned addr) {
-    asm volatile (".insn s 0x6b, 5, x0, 0(%0)" :: "r"(addr) );
-}
+    // Prefetch
+    inline void vx_prefetch(unsigned addr) {
+        asm volatile (".insn s 0x6b, 5, x0, 0(%0)" :: "r"(addr));
+    }
 
-// Return active warp's thread id 
-inline int vx_thread_id() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_WTID));
-    return result;   
-}
+    // Matrix load
+    inline void vx_matld(int* outValues, unsigned addr) {
+        asm volatile("lb  %[val], 0(%0)" : [val] "=r"(outValues[0]) : "r"(addr));
+        asm volatile("lb  %[val], 0(%0)" : [val] "=r"(outValues[1]) : "r"(addr + 1));
+        asm volatile("lb  %[val], 0(%0)" : [val] "=r"(outValues[2]) : "r"(addr + 2));
+        asm volatile("lb  %[val], 0(%0)" : [val] "=r"(outValues[3]) : "r"(addr + 3));
+    }
 
-// Return active core's local thread id
-inline int vx_thread_lid() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_LTID));
-    return result;   
-}
+    // Matrix store
+    inline void vx_matst(unsigned addr, int* arrValues) {
+        asm volatile("sb  %0, 0(%1)" :: "r"(arrValues[0]), "r"(addr));
+        asm volatile("sb  %0, 0(%1)" :: "r"(arrValues[1]), "r"(addr + 1));
+        asm volatile("sb  %0, 0(%1)" :: "r"(arrValues[2]), "r"(addr + 2));
+        asm volatile("sb  %0, 0(%1)" :: "r"(arrValues[3]), "r"(addr + 3));
+    }
 
-// Return processsor global thread id
-inline int vx_thread_gid() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_GTID));
-    return result;   
-}
+    // Return active warp's thread id 
+    inline int vx_thread_id() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_WTID));
+        return result;
+    }
 
-// Return active core's local warp id
-inline int vx_warp_id() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_LWID));
-    return result;   
-}
+    // Return active core's local thread id
+    inline int vx_thread_lid() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_LTID));
+        return result;
+    }
 
-// Return processsor's global warp id
-inline int vx_warp_gid() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_GWID));
-    return result;   
-}
+    // Return processsor global thread id
+    inline int vx_thread_gid() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_GTID));
+        return result;
+    }
 
-// Return processsor core id
-inline int vx_core_id() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_GCID));
-    return result; 
-}
+    // Return active core's local warp id
+    inline int vx_warp_id() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_LWID));
+        return result;
+    }
 
-// Return current threadk mask
-inline int vx_thread_mask() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_TMASK));
-    return result; 
-}
+    // Return processsor's global warp id
+    inline int vx_warp_gid() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_GWID));
+        return result;
+    }
 
-// Return the number of threads in a warp
-inline int vx_num_threads() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_NT));
-    return result; 
-}
+    // Return processsor core id
+    inline int vx_core_id() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_GCID));
+        return result;
+    }
 
-// Return the number of warps in a core
-inline int vx_num_warps() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_NW));
-    return result;   
-}
+    // Return current threadk mask
+    inline int vx_thread_mask() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_TMASK));
+        return result;
+    }
 
-// Return the number of cores in the processsor
-inline int vx_num_cores() {
-    int result;
-    asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_NC));
-    return result;   
-}
+    // Return the number of threads in a warp
+    inline int vx_num_threads() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_NT));
+        return result;
+    }
 
-inline void vx_fence() {
-    asm volatile ("fence iorw, iorw");
-}
+    // Return the number of warps in a core
+    inline int vx_num_warps() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_NW));
+        return result;
+    }
+
+    // Return the number of cores in the processsor
+    inline int vx_num_cores() {
+        int result;
+        asm volatile ("csrr %0, %1" : "=r"(result) : "i"(CSR_NC));
+        return result;
+    }
+
+    inline void vx_fence() {
+        asm volatile ("fence iorw, iorw");
+    }
 
 #define __if(b) vx_split(b); \
                 if (b) 
