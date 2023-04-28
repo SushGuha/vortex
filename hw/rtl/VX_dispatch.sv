@@ -10,6 +10,7 @@ module VX_dispatch (
 
     // outputs
     VX_alu_req_if.master    alu_req_if,
+    VX_sau_req_if.master    sau_req_if,
     VX_lsu_req_if.master    lsu_req_if,
     VX_csr_req_if.master    csr_req_if,
 `ifdef EXT_F_ENABLE
@@ -19,6 +20,7 @@ module VX_dispatch (
 );
     wire [`NT_BITS-1:0] tid;
     wire alu_req_ready;
+    wire sau_req_ready;
     wire lsu_req_ready;
     wire csr_req_ready;
 `ifdef EXT_F_ENABLE
@@ -54,6 +56,31 @@ module VX_dispatch (
         .valid_out (alu_req_if.valid),
         .ready_out (alu_req_if.ready)
     );
+
+    // SAU unit
+
+    wire sau_req_valid = ibuffer_if.valid && (ibuffer_if.ex_type == `EX_SAU);
+    //wire [`INST_ALU_BITS-1:0] sau_op_type = `INST_ALU_BITS'(ibuffer_if.op_type);
+
+    wire out;
+    
+    VX_skid_buffer #(
+        .DATAW   (1),
+        .OUT_REG (1)
+    ) sau_buffer (
+        .clk       (clk),
+        .reset     (reset),
+        .valid_in  (sau_req_valid),
+        .ready_in  (sau_req_ready),
+        .data_in   ({1'b0}),
+        .data_out  ({out}),
+        .valid_out (sau_req_if.valid),
+        .ready_out (sau_req_if.ready)
+    );
+
+    `UNUSED_VAR(out);
+
+
 
     // lsu unit
 
@@ -147,6 +174,7 @@ module VX_dispatch (
         `EX_ALU: ready_r = alu_req_ready;
         `EX_LSU: ready_r = lsu_req_ready;
         `EX_CSR: ready_r = csr_req_ready;
+        `EX_SAU: ready_r = sau_req_ready;
     `ifdef EXT_F_ENABLE
         `EX_FPU: ready_r = fpu_req_ready;
     `endif

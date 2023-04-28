@@ -44,6 +44,7 @@
 `define EX_CSR          3'h3
 `define EX_FPU          3'h4
 `define EX_GPU          3'h5
+`define EX_SAU          3'h6
 `define EX_BITS         3
 
 ///////////////////////////////////////////////////////////////////////////////

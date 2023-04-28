@@ -16,6 +16,7 @@ module VX_issue #(
     VX_writeback_if.slave   writeback_if,   
     
     VX_alu_req_if.master    alu_req_if,
+    VX_sau_req_if.master    sau_req_if,
     VX_lsu_req_if.master    lsu_req_if,    
     VX_csr_req_if.master    csr_req_if,
 `ifdef EXT_F_ENABLE
@@ -115,6 +116,7 @@ module VX_issue #(
         .ibuffer_if (dispatch_if),
         .gpr_rsp_if (gpr_rsp_if),
         .alu_req_if (alu_req_if),
+        .sau_req_if (sau_req_if),
         .lsu_req_if (lsu_req_if),        
         .csr_req_if (csr_req_if),
     `ifdef EXT_F_ENABLE

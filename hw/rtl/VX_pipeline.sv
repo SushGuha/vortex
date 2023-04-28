@@ -115,6 +115,7 @@ module VX_pipeline #(
     VX_warp_ctl_if      warp_ctl_if();
     VX_ifetch_rsp_if    ifetch_rsp_if();
     VX_alu_req_if       alu_req_if();
+    VX_sau_req_if       sau_req_if();
     VX_lsu_req_if       lsu_req_if();
     VX_csr_req_if       csr_req_if();
 `ifdef EXT_F_ENABLE 
@@ -190,6 +191,7 @@ module VX_pipeline #(
         .writeback_if   (writeback_if),
 
         .alu_req_if     (alu_req_if),
+        .sau_req_if     (sau_req_if),
         .lsu_req_if     (lsu_req_if),        
         .csr_req_if     (csr_req_if),
     `ifdef EXT_F_ENABLE
@@ -218,6 +220,7 @@ module VX_pipeline #(
         .fetch_to_csr_if(fetch_to_csr_if),              
         
         .alu_req_if     (alu_req_if),
+        .sau_req_if     (sau_req_if),
         .lsu_req_if     (lsu_req_if),        
         .csr_req_if     (csr_req_if),
     `ifdef EXT_F_ENABLE

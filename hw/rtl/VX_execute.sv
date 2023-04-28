@@ -25,6 +25,7 @@ module VX_execute #(
     
     // inputs    
     VX_alu_req_if.slave     alu_req_if,
+    VX_sau_req_if.slave     sau_req_if,
     VX_lsu_req_if.slave     lsu_req_if,    
     VX_csr_req_if.slave     csr_req_if,  
 `ifdef EXT_F_ENABLE
@@ -258,6 +259,8 @@ module VX_execute #(
         .reset          (rst),
         .start          (start),
         .out_matrix     (out_matrix),
+        .sau_req_if     (sau_req_if),
+
         .ready          (ready)
     );
 
