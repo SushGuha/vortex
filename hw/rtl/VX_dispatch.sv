@@ -60,25 +60,22 @@ module VX_dispatch (
     // SAU unit
 
     wire sau_req_valid = ibuffer_if.valid && (ibuffer_if.ex_type == `EX_SAU);
-    //wire [`INST_ALU_BITS-1:0] sau_op_type = `INST_ALU_BITS'(ibuffer_if.op_type);
+    wire [`INST_ALU_BITS-1:0] sau_op_type = `INST_ALU_BITS'(ibuffer_if.op_type);
 
-    wire out;
     
     VX_skid_buffer #(
-        .DATAW   (1),
+        .DATAW   (`UUID_BITS + `NW_BITS + `NUM_THREADS + 32 + `INST_FPU_BITS + `INST_MOD_BITS + `NR_BITS + 1 + (2 * `NUM_THREADS * 32)),
         .OUT_REG (1)
     ) sau_buffer (
         .clk       (clk),
         .reset     (reset),
         .valid_in  (sau_req_valid),
         .ready_in  (sau_req_ready),
-        .data_in   ({1'b0}),
-        .data_out  ({out}),
+        .data_in   ({ibuffer_if.uuid, ibuffer_if.wid, ibuffer_if.tmask, ibuffer_if.PC, sau_op_type,        ibuffer_if.op_mod, ibuffer_if.rd, ibuffer_if.wb, gpr_rsp_if.rs1_data, gpr_rsp_if.rs2_data}),
+        .data_out  ({sau_req_if.uuid, sau_req_if.wid, sau_req_if.tmask, sau_req_if.PC, sau_req_if.op_type, sau_req_if.op_mod, sau_req_if.rd, sau_req_if.wb, sau_req_if.rs1_data, sau_req_if.rs2_data}),
         .valid_out (sau_req_if.valid),
         .ready_out (sau_req_if.ready)
     );
-
-    `UNUSED_VAR(out);
 
 
 

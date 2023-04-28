@@ -241,8 +241,6 @@ module VX_execute #(
     wire rst;
     assign rst = 0;
 
-    logic ready;
-    `UNUSED_VAR (ready);
     logic start;
     assign start = 1;
 
@@ -259,10 +257,8 @@ module VX_execute #(
         .reset          (rst),
         .start          (start),
         .out_matrix     (out_matrix),
-        .sau_req_if     (sau_req_if),
-
-        .ready          (ready)
-    );
+        .sau_req_if     (sau_req_if)
+);
 
 
     // special workaround to get RISC-V tests Pass/Fail status

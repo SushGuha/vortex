@@ -126,6 +126,7 @@ module VX_pipeline #(
     VX_wstall_if        wstall_if();
     VX_join_if          join_if();
     VX_commit_if        alu_commit_if();
+    VX_commit_if        sau_commit_if();
     VX_commit_if        ld_commit_if();
     VX_commit_if        st_commit_if();
     VX_commit_if        csr_commit_if();  
@@ -249,7 +250,8 @@ module VX_pipeline #(
         .reset          (commit_reset),
 
         .alu_commit_if  (alu_commit_if),
-        .ld_commit_if   (ld_commit_if),        
+        .ld_commit_if   (ld_commit_if),  
+        .sau_commit_if   (sau_commit_if),              
         .st_commit_if   (st_commit_if),
         .csr_commit_if  (csr_commit_if),
     `ifdef EXT_F_ENABLE

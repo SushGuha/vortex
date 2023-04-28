@@ -11,6 +11,7 @@ module VX_commit #(
     VX_commit_if.slave      ld_commit_if,
     VX_commit_if.slave      st_commit_if, 
     VX_commit_if.slave      csr_commit_if,
+    VX_commit_if.slave      sau_commit_if,
 `ifdef EXT_F_ENABLE
     VX_commit_if.slave      fpu_commit_if,
 `endif
@@ -23,6 +24,7 @@ module VX_commit #(
     // CSRs update
 
     wire alu_commit_fire = alu_commit_if.valid && alu_commit_if.ready;
+    wire sau_commit_fire = sau_commit_if.valid && sau_commit_if.ready;
     wire ld_commit_fire  = ld_commit_if.valid && ld_commit_if.ready;
     wire st_commit_fire  = st_commit_if.valid && st_commit_if.ready;
     wire csr_commit_fire = csr_commit_if.valid && csr_commit_if.ready;
@@ -35,6 +37,7 @@ module VX_commit #(
                     || ld_commit_fire
                     || st_commit_fire
                     || csr_commit_fire
+                    || sau_commit_fire
                 `ifdef EXT_F_ENABLE
                     || fpu_commit_fire
                 `endif
@@ -81,7 +84,8 @@ module VX_commit #(
         .reset          (reset),
 
         .alu_commit_if  (alu_commit_if),
-        .ld_commit_if   (ld_commit_if),        
+        .ld_commit_if   (ld_commit_if),
+        .sau_commit_if(sau_commit_if),        
         .csr_commit_if  (csr_commit_if),
     `ifdef EXT_F_ENABLE
         .fpu_commit_if  (fpu_commit_if),
