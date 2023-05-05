@@ -83,12 +83,12 @@ public:
     void tick();
 };
 
-// class SauUnit : public ExeUnit {
-// public:
-//     SauUnit(const SimContext& ctx, Core*);
+class SauUnit : public ExeUnit {
+public:
+    SauUnit(const SimContext& ctx, Core*);
     
-//     void tick();
-// };
+    void tick();
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////
